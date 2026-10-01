@@ -1,5 +1,11 @@
 :root {
-    --text-size: 18px;
+    --text-size: 60px;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
 }
 
 body {
@@ -7,40 +13,46 @@ body {
     color: white;
 }
 
-.lyrics-player {
+.app {
+    margin: 0 auto;
+    text-align: center;
+    h1{
+        margin: 0;
+    }
+
+}
+
+
+.lyrics-container{
     display: flex;
     flex-direction: column;
-    align-items: center;
-}
-
-.lyrics-row-container {
-    display: flex;
-    align-items: center;
     text-align: center;
-
-    width: fit-content;
-    height: calc(var(--text-size) * 1.8);
-    cursor: pointer;
-}
-
-.lyrics-row-container:has(.lyrics-row-empty){
-    width: 300px;
-}
-
-.lyrics-row-container:hover {
-
-    .lyrics-row-inactive {
-        opacity: 0.6;
+    align-items: center;
+    overflow-y: hidden;
+    max-height: 100vh;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    .container::-webkit-scrollbar {
+        display: none;
     }
+}
+
+.lyrics-row-inactive:hover {
+    opacity: 0.6;
 }
 
 .lyrics-row {
     margin: 0;
-    font-size: var(--text-size);
-    transition: ease 300ms;
+    padding: 20px;
 
+    font-size: var(--text-size);
+    width: fit-content;
+
+    transition: ease 300ms;
+    cursor: pointer;
     opacity: 0.3;
-    font-family: Montserrat, sans-serif;
+    font-family: "Noto Sans", sans-serif;
+    font-weight: bold;
 }
 
 .lyrics-row-active {

@@ -2,7 +2,7 @@ import {useEffect, useRef, useState} from "react";
 
 
 
-export function useAudioPlayer(musicFile:string) {
+export function useAudioPlayer(musicFile:File) {
 
     const currentAudio = useRef<HTMLAudioElement | null>(null);
     const [currentTime, setCurrentTime] = useState(0);
@@ -12,8 +12,8 @@ export function useAudioPlayer(musicFile:string) {
             currentAudio.current.pause();
             currentAudio.current.currentTime = 0;
         }
-
-        const audio = new Audio(musicFile);
+        const audioUrl = URL.createObjectURL(musicFile);
+        const audio = new Audio(audioUrl);
         currentAudio.current = audio;
         setCurrentTime(audio.currentTime);
         audio.play().then(() => {
@@ -26,7 +26,7 @@ export function useAudioPlayer(musicFile:string) {
             currentAudio.current?.pause();
             currentAudio.current = null;
         };
-    }, []);
+    }, [musicFile]);
 
     useEffect(() => {
         let timer = setInterval(() => {

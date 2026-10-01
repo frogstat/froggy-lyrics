@@ -1,38 +1,40 @@
 import {useLyricsPlayer} from "../hooks/useLyricsPlayer.ts";
 import {useAudioPlayer} from "../hooks/useAudioPlayer.ts";
 
-const TEST_SONG = "/music.flac"
+type LyricsPlayerProps = {
+    file: File
+}
 
-function LyricsPlayer() {
+function LyricsPlayer({file}: LyricsPlayerProps) {
 
     const {
         currentTime,
         changeCurrentTime
-    } = useAudioPlayer(TEST_SONG);
+    } = useAudioPlayer(file);
 
     const {
         lyrics,
-        activeIndex
-    } = useLyricsPlayer(currentTime, TEST_SONG)
-
+        activeIndex,
+        currentLyricsRef
+    } = useLyricsPlayer(currentTime, file)
 
 
     return (
         <div className="lyrics-player">
-            {lyrics && lyrics.map((lyric, index) => (
-                <div
-                    key={index}
-                    className="lyrics-row-container"
-                    onClick={() => {changeCurrentTime(lyric.timestamp)}}
-                >
+            <div className="lyrics-container">
+                {lyrics && lyrics.map((lyric, index) => (
                     <p
-
+                        key={index}
+                        onClick={() => {
+                            changeCurrentTime(lyric.timestamp)
+                        }}
+                        ref={index === activeIndex ? currentLyricsRef : undefined}
                         className={`lyrics-row ${index === activeIndex ? "lyrics-row-active" : "lyrics-row-inactive"} ${!lyric.text && "lyrics-row-empty"}`}>
-                        {lyric.text}
+                        {lyric.text.length ? lyric.text : <br/>}
                     </p>
-                </div>
-            ))}
-            {!lyrics && <p>No lyrics loaded</p>}
+                ))}
+                {!lyrics && <p>No lyrics loaded</p>}
+            </div>
         </div>
     )
 
