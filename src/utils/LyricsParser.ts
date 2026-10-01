@@ -34,5 +34,12 @@ export function parseLyrics(lyricsString:string): LyricRow[] {
             lyrics.push(lyricsRow)
         } catch(_) {}
     }
+
+    for (let i = 0; i < 10; i++) {
+        lyrics.push({
+            timestamp: 9999,
+            text: ""
+        });
+    }
     return lyrics;
 }

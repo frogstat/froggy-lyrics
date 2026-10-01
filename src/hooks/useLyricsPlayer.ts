@@ -3,7 +3,7 @@ import {extractMetadata} from "../utils/metaDataExtractor.ts";
 import type {LyricRow, Metadata} from "../utils/types.ts";
 
 
-export function useLyricsPlayer(currentTime: number, musicFile: File, scrollDownMode:boolean) {
+export function useLyricsPlayer(currentTime: number, musicFile: File, scrollDownMode: boolean) {
     const [allLyrics, setAllLyrics] = useState<LyricRow[][] | null>();
     const [lyrics, setLyrics] = useState<LyricRow[] | null>(null);
     const currentLyricsRef = useRef<HTMLSpanElement>(null);
@@ -19,6 +19,19 @@ export function useLyricsPlayer(currentTime: number, musicFile: File, scrollDown
                 artist: result.artist,
                 cover: result.cover,
             })
+            const theme = document.createElement("style");
+
+            theme.textContent = `
+  body {
+    background-image:
+      linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)),
+      url("${result.cover}");
+    background-size: cover;
+  }
+`;
+
+            document.head.appendChild(theme);
+
         })
     }, [musicFile])
 
@@ -40,7 +53,7 @@ export function useLyricsPlayer(currentTime: number, musicFile: File, scrollDown
         useMemo(() => allLyrics ? allLyrics.length : 0, [allLyrics]);
 
     useEffect(() => {
-        if(!scrollDownMode) {
+        if (!scrollDownMode) {
             return;
         }
 
