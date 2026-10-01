@@ -1,0 +1,51 @@
+:root {
+    --text-size: 18px
+}
+
+body {
+    background-color: black;
+}
+
+.lyrics-player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    color: white;
+
+}
+
+.lyrics-row-container {
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    width: fit-content;
+    height: calc(var(--text-size) * 1.8);
+    cursor: pointer;
+}
+
+.lyrics-row-container:has(.lyrics-row-empty){
+    width: 300px;
+}
+
+.lyrics-row-container:hover {
+
+    .lyrics-row-inactive {
+        opacity: 0.6;
+    }
+}
+
+.lyrics-row {
+    margin: 0;
+    font-size: var(--text-size);
+    transition: ease 300ms;
+
+    opacity: 0.3;
+    font-family: Montserrat, sans-serif;
+}
+
+.lyrics-row-active {
+    opacity: 1;
+}
+
