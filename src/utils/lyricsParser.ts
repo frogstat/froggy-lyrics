@@ -35,12 +35,13 @@ function parseRow(row: string): LyricRow {
     if (!match) {
         throw Error(`Unrecognized row: ${row}`);
     }
-    const minutes = Number(match[0])
-    const seconds = Number(match[1])
-    const text = match[2]
+    const minutes = Number(match[1])
+    const seconds = Number(match[2])
+    const time = minutes * 60 + seconds;
+    const text = match[3]
 
     return {
-        timestamp: minutes * 60 + seconds,
+        timestamp: time,
         text: text
     }
 
@@ -51,6 +52,7 @@ export function getLyrics(): LyricRow[] {
     const lyrics: LyricRow[] = []
     for (const row of TEST_LYRICS_STRING.split("\n")) {
         const lyricsRow: LyricRow = parseRow(row)
+        console.log(lyricsRow)
         lyrics.push(lyricsRow)
     }
     return lyrics;
