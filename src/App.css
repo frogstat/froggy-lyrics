@@ -107,6 +107,16 @@ body {
     }
 }
 
+.cover-and-seeker{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cover-image{
+    height: 60px;
+    border-radius: 10px;
+}
 .audio-seeker{
     margin: auto;
     width: 60vw;

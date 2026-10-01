@@ -7,4 +7,5 @@ export type Metadata = {
     title: string;
     album: string;
     artist: string;
+    cover: string | null;
 }

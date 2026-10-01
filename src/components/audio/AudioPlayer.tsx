@@ -18,12 +18,16 @@ function AudioPlayer({metadata, duration, currentTime, changeCurrentTime}: Audio
                 <p>{metadata?.album}</p>
                 <p>{metadata?.artist}</p>
             </div>
-            <AudioSeeker
-                duration={duration}
-                currentTime={currentTime}
-                changeCurrentTime={changeCurrentTime}
-            >
-            </AudioSeeker>
+            <div className="cover-and-seeker">
+                {metadata?.cover && <img className={"cover-image"} src={metadata.cover} alt="cover"/>}
+                <AudioSeeker
+                    duration={duration}
+                    currentTime={currentTime}
+                    changeCurrentTime={changeCurrentTime}
+                >
+                </AudioSeeker>
+            </div>
+
         </div>
     );
 }

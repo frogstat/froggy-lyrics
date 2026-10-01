@@ -17,6 +17,7 @@ export function useLyricsPlayer(currentTime: number, musicFile: File, scrollDown
                 title: result.title,
                 album: result.album,
                 artist: result.artist,
+                cover: result.cover,
             })
         })
     }, [musicFile])

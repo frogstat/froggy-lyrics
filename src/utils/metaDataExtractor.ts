@@ -1,4 +1,4 @@
-import {type ITag, parseBlob} from "music-metadata";
+import {type IPicture, type ITag, parseBlob} from "music-metadata";
 import {parseLyrics} from "./LyricsParser.ts";
 
 const LYRICS_LANGUAGE_REGEX = /lyrics_\w{2}/
@@ -24,13 +24,29 @@ export async function extractMetadata(file: File) {
 
     const nativeTags: ITag[] = Object.values(metadata.native).flat();
     const allLyrics = extractAllLyricsTags(nativeTags);
-    console.log("allLyrics", allLyrics);
 
     return {
         title: metadata.common.title ?? "Unknown",
         album: metadata.common.album ?? "Unknown",
         artist: metadata.common.artist ?? "Unknown",
+        cover: extractImage(metadata.common.picture),
         lyrics: allLyrics
+    }
+}
+
+function extractImage(pictureData: IPicture[] | undefined) {
+    if (!pictureData) {
+        return null;
+    }
+    try {
+        const buffer = new Uint8Array(pictureData[0].data).buffer;
+        const blob = new Blob([buffer], {
+            type: pictureData[0].format,
+        });
+
+        return URL.createObjectURL(blob);
+    } catch (error) {
+        return null;
     }
 }
 
