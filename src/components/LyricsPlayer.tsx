@@ -1,11 +1,16 @@
 import {useLyricsPlayer} from "../hooks/useLyricsPlayer.ts";
 import {useAudioPlayer} from "../hooks/useAudioPlayer.ts";
+import ScrollDownLyrics from "./ScrollDownLyrics.tsx";
+import {useState} from "react";
+import BilingualLyrics from "./BilingualLyrics.tsx";
 
 type LyricsPlayerProps = {
     file: File
 }
 
 function LyricsPlayer({file}: LyricsPlayerProps) {
+
+    const [scrollDownMode, setScrollDownMode] = useState<boolean>(true);
 
     const {
         currentTime,
@@ -17,39 +22,36 @@ function LyricsPlayer({file}: LyricsPlayerProps) {
         activeIndex,
         currentLyricsRef,
         switchLyrics,
-        numberOfLanguages
-    } = useLyricsPlayer(currentTime, file)
+        numberOfLanguages,
+        allLyrics
+    } = useLyricsPlayer(currentTime, file, scrollDownMode)
 
-    function resolveRowPosition(index: number):string {
-        if (index === activeIndex) {
-            return "lyrics-row-active"
-        } else if (Math.abs(index - activeIndex) === 1) {
-            return "lyrics-row-one-apart"
-        } else if (Math.abs(index - activeIndex) === 2) {
-            return "lyrics-row-two-apart"
-        } else if (Math.abs(index - activeIndex) === 3) {
-            return "lyrics-row-three-apart"
+    function resolveDisplayMode() {
+        if (scrollDownMode) {
+            return (
+                <ScrollDownLyrics
+                    lyrics={lyrics}
+                    changeCurrentTime={changeCurrentTime}
+                    activeIndex={activeIndex}
+                    currentLyricsRef={currentLyricsRef}>
+                </ScrollDownLyrics>
+            )
         }
-        return "lyrics-row-inactive"
+        return (
+            <BilingualLyrics
+                allLyrics={allLyrics ?? null}
+                currentTime={currentTime}
+            >
+            </BilingualLyrics>)
     }
 
     return (
         <div className="lyrics-player">
             {numberOfLanguages > 1 && <button onClick={switchLyrics}>Switch Language</button>}
-            <div className="lyrics-container">
-                {lyrics && lyrics.map((lyric, index) => (
-                    <span
-                        key={index}
-                        onClick={() => {
-                            changeCurrentTime(lyric.timestamp)
-                        }}
-                        ref={index === activeIndex ? currentLyricsRef : undefined}
-                        className={`lyrics-row ${resolveRowPosition(index)} ${!lyric.text && "lyrics-row-empty"}`}>
-                        {lyric.text.length ? lyric.text : ""}
-                    </span>
-                ))}
-                {!lyrics && <p>No lyrics loaded</p>}
-            </div>
+            <button onClick={() =>
+                setScrollDownMode(prev => !prev)
+            }>Switch Mode</button>
+            {resolveDisplayMode()}
         </div>
     )
 

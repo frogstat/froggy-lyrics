@@ -68,5 +68,19 @@ body {
     padding:var(--text-size);
 }
 
+/*-----------------BILINGUAL MODE----------------*/
 
-
+.lyrics-container-bilingual{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+.bilingual-lyrics{
+    font-family: "Noto Sans", sans-serif;
+    font-weight: bold;
+    font-size: var(--text-size);
+    margin: calc(var(--text-size) / 2);
+    transition: ease 300ms;
+}

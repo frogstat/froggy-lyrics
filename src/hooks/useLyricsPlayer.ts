@@ -3,10 +3,10 @@ import {extractMetadata} from "../utils/metaDataExtractor.ts";
 import type {LyricRow} from "../utils/types.ts";
 
 
-export function useLyricsPlayer(currentTime: number, musicFile: File) {
+export function useLyricsPlayer(currentTime: number, musicFile: File, scrollDownMode:boolean) {
     const [allLyrics, setAllLyrics] = useState<LyricRow[][] | null>();
     const [lyrics, setLyrics] = useState<LyricRow[] | null>(null);
-    const currentLyricsRef = useRef<HTMLParagraphElement>(null);
+    const currentLyricsRef = useRef<HTMLSpanElement>(null);
 
     useEffect(() => {
         extractMetadata(musicFile).then(result => {
@@ -33,12 +33,16 @@ export function useLyricsPlayer(currentTime: number, musicFile: File) {
         useMemo(() => allLyrics ? allLyrics.length : 0, [allLyrics]);
 
     useEffect(() => {
+        if(!scrollDownMode) {
+            return;
+        }
+
         currentLyricsRef.current?.scrollIntoView({
             block: "center",
             behavior: "smooth"
         });
 
-    }, [activeIndex]);
+    }, [activeIndex, scrollDownMode]);
 
     function switchLyrics() {
         if (!allLyrics || allLyrics.length < 2 || !lyrics) {
@@ -57,6 +61,7 @@ export function useLyricsPlayer(currentTime: number, musicFile: File) {
         activeIndex,
         currentLyricsRef,
         switchLyrics,
-        numberOfLanguages
+        numberOfLanguages,
+        allLyrics
     }
 }
