@@ -1,13 +1,16 @@
 import {useEffect, useMemo, useState} from "react";
-import {getLyrics, type LyricRow} from "../utils/lyricsParser.ts";
+import {extractMetadata} from "../utils/metaDataExtractor.ts";
+import type {LyricRow} from "../utils/types.ts";
 
 
-export function useLyricsPlayer(currentTime: number) {
+export function useLyricsPlayer(currentTime: number, musicFile:string) {
     const [lyrics, setLyrics] = useState<LyricRow[] | null>();
 
 
     useEffect(() => {
-        setLyrics(getLyrics());
+        extractMetadata(musicFile).then(result => {
+            setLyrics(result.lyrics)
+        })
     }, [])
 
 
@@ -18,7 +21,6 @@ export function useLyricsPlayer(currentTime: number) {
 
         for (let i = lyrics.length - 1; i >= 0; i--) {
             if (currentTime >= lyrics[i].timestamp) {
-                console.log(`Changed index: ${i}`);
                 return i
             }
         }

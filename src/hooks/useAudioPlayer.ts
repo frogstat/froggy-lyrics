@@ -1,8 +1,8 @@
 import {useEffect, useRef, useState} from "react";
 
-const TEST_SONG = "/music.opus"
 
-export function useAudioPlayer() {
+
+export function useAudioPlayer(musicFile:string) {
 
     const currentAudio = useRef<HTMLAudioElement | null>(null);
     const [currentTime, setCurrentTime] = useState(0);
@@ -13,13 +13,13 @@ export function useAudioPlayer() {
             currentAudio.current.currentTime = 0;
         }
 
-        const audio = new Audio(TEST_SONG);
+        const audio = new Audio(musicFile);
         currentAudio.current = audio;
         setCurrentTime(audio.currentTime);
         audio.play().then(() => {
-            console.log(`Playing ${TEST_SONG}`);
+            console.log(`Playing ${musicFile}`);
         }).catch(error => {
-            console.error(`Failed to play ${TEST_SONG}:`, error);
+            console.error(`Failed to play ${musicFile}:`, error);
         });
 
         return () => {

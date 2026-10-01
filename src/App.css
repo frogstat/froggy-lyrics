@@ -1,18 +1,16 @@
 :root {
-    --text-size: 18px
+    --text-size: 18px;
 }
 
 body {
     background-color: black;
+    color: white;
 }
 
 .lyrics-player {
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    color: white;
-
 }
 
 .lyrics-row-container {
