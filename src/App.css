@@ -29,16 +29,12 @@ body {
     text-align: center;
     align-items: center;
     overflow-y: hidden;
-    max-height: 100vh;
+    max-height: 90vh;
     -ms-overflow-style: none;
     scrollbar-width: none;
     .container::-webkit-scrollbar {
         display: none;
     }
-}
-
-.lyrics-row-inactive:hover {
-    opacity: 0.6;
 }
 
 .lyrics-row {
@@ -50,12 +46,27 @@ body {
 
     transition: ease 300ms;
     cursor: pointer;
-    opacity: 0.3;
+
     font-family: "Noto Sans", sans-serif;
     font-weight: bold;
 }
 
-.lyrics-row-active {
-    opacity: 1;
+.lyrics-row-inactive {
+    opacity: 0;
 }
+
+.lyrics-row-three-apart{
+    opacity: 0.2;
+}
+.lyrics-row-two-apart{
+    opacity: 0.4;
+}
+.lyrics-row-one-apart{
+    opacity: 0.6;
+}
+.lyrics-row-empty{
+    padding:var(--text-size);
+}
+
+
 

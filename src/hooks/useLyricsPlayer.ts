@@ -3,14 +3,15 @@ import {extractMetadata} from "../utils/metaDataExtractor.ts";
 import type {LyricRow} from "../utils/types.ts";
 
 
-export function useLyricsPlayer(currentTime: number, musicFile:File) {
-    const [lyrics, setLyrics] = useState<LyricRow[] | null>();
+export function useLyricsPlayer(currentTime: number, musicFile: File) {
+    const [allLyrics, setAllLyrics] = useState<LyricRow[][] | null>();
+    const [lyrics, setLyrics] = useState<LyricRow[] | null>(null);
     const currentLyricsRef = useRef<HTMLParagraphElement>(null);
-
 
     useEffect(() => {
         extractMetadata(musicFile).then(result => {
-            setLyrics(result.lyrics)
+            setAllLyrics(result.lyrics)
+            setLyrics(() => result.lyrics.length ? result.lyrics[0] : null)
         })
     }, [musicFile])
 
@@ -28,6 +29,9 @@ export function useLyricsPlayer(currentTime: number, musicFile:File) {
         return 0
     }, [currentTime, lyrics]);
 
+    const numberOfLanguages =
+        useMemo(() => allLyrics ? allLyrics.length : 0, [allLyrics]);
+
     useEffect(() => {
         currentLyricsRef.current?.scrollIntoView({
             block: "center",
@@ -36,9 +40,23 @@ export function useLyricsPlayer(currentTime: number, musicFile:File) {
 
     }, [activeIndex]);
 
+    function switchLyrics() {
+        if (!allLyrics || allLyrics.length < 2 || !lyrics) {
+            return;
+        }
+        const currentIndex = allLyrics.indexOf(lyrics);
+        if (currentIndex >= allLyrics.length - 1) {
+            setLyrics(allLyrics[0]);
+        } else {
+            setLyrics(allLyrics[currentIndex + 1])
+        }
+    }
+
     return {
         lyrics,
         activeIndex,
-        currentLyricsRef
+        currentLyricsRef,
+        switchLyrics,
+        numberOfLanguages
     }
 }

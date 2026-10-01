@@ -17,9 +17,9 @@ export function useAudioPlayer(musicFile:File) {
         currentAudio.current = audio;
         setCurrentTime(audio.currentTime);
         audio.play().then(() => {
-            console.log(`Playing ${musicFile}`);
+            console.log(`Playing ${musicFile.name}`);
         }).catch(error => {
-            console.error(`Failed to play ${musicFile}:`, error);
+            console.error(`Failed to play ${musicFile.name}:`, error);
         });
 
         return () => {

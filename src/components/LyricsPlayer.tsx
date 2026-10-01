@@ -15,23 +15,38 @@ function LyricsPlayer({file}: LyricsPlayerProps) {
     const {
         lyrics,
         activeIndex,
-        currentLyricsRef
+        currentLyricsRef,
+        switchLyrics,
+        numberOfLanguages
     } = useLyricsPlayer(currentTime, file)
 
+    function resolveRowPosition(index: number):string {
+        if (index === activeIndex) {
+            return "lyrics-row-active"
+        } else if (Math.abs(index - activeIndex) === 1) {
+            return "lyrics-row-one-apart"
+        } else if (Math.abs(index - activeIndex) === 2) {
+            return "lyrics-row-two-apart"
+        } else if (Math.abs(index - activeIndex) === 3) {
+            return "lyrics-row-three-apart"
+        }
+        return "lyrics-row-inactive"
+    }
 
     return (
         <div className="lyrics-player">
+            {numberOfLanguages > 1 && <button onClick={switchLyrics}>Switch Language</button>}
             <div className="lyrics-container">
                 {lyrics && lyrics.map((lyric, index) => (
-                    <p
+                    <span
                         key={index}
                         onClick={() => {
                             changeCurrentTime(lyric.timestamp)
                         }}
                         ref={index === activeIndex ? currentLyricsRef : undefined}
-                        className={`lyrics-row ${index === activeIndex ? "lyrics-row-active" : "lyrics-row-inactive"} ${!lyric.text && "lyrics-row-empty"}`}>
-                        {lyric.text.length ? lyric.text : <br/>}
-                    </p>
+                        className={`lyrics-row ${resolveRowPosition(index)} ${!lyric.text && "lyrics-row-empty"}`}>
+                        {lyric.text.length ? lyric.text : ""}
+                    </span>
                 ))}
                 {!lyrics && <p>No lyrics loaded</p>}
             </div>

@@ -1,44 +1,61 @@
-import {type ILyricsTag, parseBlob} from "music-metadata";
-import type {LyricRow} from "./types.ts";
+import {type ITag, parseBlob} from "music-metadata";
+import {parseLyrics} from "./LyricsParser.ts";
 
+const LYRICS_LANGUAGE_REGEX = /lyrics_\w{2}/
 
-export async function extractMetadata(file:File) {
+function extractAllLyricsTags(nativeTags: ITag[]) {
+    return nativeTags
+        .filter(tag => {
+            const id = tag.id.toLowerCase();
+            if (id.toLowerCase() == ("lyrics")){
+                return true;
+            } else if (LYRICS_LANGUAGE_REGEX.test(id)){
+                return true;
+            }
+            return false;
+        })
+        .map(tag => parseLyrics(tag.value as string));
+}
+
+export async function extractMetadata(file: File) {
 
     const metadata = await parseBlob(file)
 
-    const lyricsTag = metadata.common.lyrics;
-    const lyrics = lyricsTag ? extractLyrics(lyricsTag) : null;
+
+    const nativeTags: ITag[] = Object.values(metadata.native).flat();
+    const allLyrics = extractAllLyricsTags(nativeTags);
+    console.log("allLyrics", allLyrics);
 
     return {
         title: metadata.common.title ?? "Unknown",
         album: metadata.common.album ?? "Unknown",
         artist: metadata.common.artist ?? "Unknown",
-        lyrics: lyrics
+        lyrics: allLyrics
     }
 }
 
-function extractLyrics(lyricsTag: ILyricsTag[]): LyricRow[] | null {
-    const lyricsList = lyricsTag[0].syncText;
-    if (!lyricsList || !lyricsList.length) {
-        return null;
-    }
-
-    const parsedLyrics: LyricRow[] = [];
-    for (const lyric of lyricsList) {
-        const timestamp = lyric.timestamp;
-        if (!timestamp) {
-            continue;
-        }
-        const text = lyric.text;
-        parsedLyrics.push({
-            timestamp: timestamp / 1000,
-            text: text,
-        })
-    }
-
-    if (!parsedLyrics.length) {
-        return null;
-    }
-
-    return parsedLyrics;
-}
+// function extractLyrics(lyricsTag: ILyricsTag[]): LyricRow[] | null {
+//     const lyricsList = lyricsTag[0].syncText;
+//     if (!lyricsList || !lyricsList.length) {
+//         return null;
+//     }
+//
+//     const parsedLyrics: LyricRow[] = [];
+//     for (const lyric of lyricsList) {
+//         const timestamp = lyric.timestamp;
+//         if (!timestamp) {
+//             continue;
+//         }
+//         const text = lyric.text;
+//         parsedLyrics.push({
+//             timestamp: timestamp / 1000,
+//             text: text,
+//         })
+//     }
+//
+//     if (!parsedLyrics.length) {
+//         return null;
+//     }
+//
+//     return parsedLyrics;
+// }
