@@ -1,11 +1,11 @@
 import {useEffect, useRef, useState} from "react";
 
 
-
-export function useAudioPlayer(musicFile:File) {
+export function useAudioPlayer(musicFile: File) {
 
     const currentAudio = useRef<HTMLAudioElement | null>(null);
     const [currentTime, setCurrentTime] = useState(0);
+    const [duration, setDuration] = useState(0);
 
     useEffect(() => {
         if (currentAudio.current) {
@@ -15,9 +15,13 @@ export function useAudioPlayer(musicFile:File) {
         const audioUrl = URL.createObjectURL(musicFile);
         const audio = new Audio(audioUrl);
         currentAudio.current = audio;
+
         setCurrentTime(audio.currentTime);
+
+
         audio.play().then(() => {
             console.log(`Playing ${musicFile.name}`);
+            setDuration(audio.duration);
         }).catch(error => {
             console.error(`Failed to play ${musicFile.name}:`, error);
         });
@@ -30,7 +34,7 @@ export function useAudioPlayer(musicFile:File) {
 
     useEffect(() => {
         let timer = setInterval(() => {
-            if(currentAudio.current) {
+            if (currentAudio.current) {
                 setCurrentTime(currentAudio.current.currentTime);
             }
         }, 50);
@@ -39,17 +43,18 @@ export function useAudioPlayer(musicFile:File) {
     }, []);
 
     function changeCurrentTime(newTime: number) {
-        if (!currentAudio.current ||newTime > currentAudio.current.duration) {
+        if (!currentAudio.current || newTime > currentAudio.current.duration) {
             return;
         }
         currentAudio.current.currentTime = newTime;
-        if(currentAudio.current.paused) {
+        if (currentAudio.current.paused) {
             currentAudio.current.play();
         }
     }
 
     return {
         currentTime,
-        changeCurrentTime
+        changeCurrentTime,
+        duration
     }
 }

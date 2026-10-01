@@ -1,17 +1,23 @@
 import {useEffect, useMemo, useRef, useState} from "react";
 import {extractMetadata} from "../utils/metaDataExtractor.ts";
-import type {LyricRow} from "../utils/types.ts";
+import type {LyricRow, Metadata} from "../utils/types.ts";
 
 
 export function useLyricsPlayer(currentTime: number, musicFile: File, scrollDownMode:boolean) {
     const [allLyrics, setAllLyrics] = useState<LyricRow[][] | null>();
     const [lyrics, setLyrics] = useState<LyricRow[] | null>(null);
     const currentLyricsRef = useRef<HTMLSpanElement>(null);
+    const [metadata, setMetadata] = useState<Metadata | null>(null);
 
     useEffect(() => {
         extractMetadata(musicFile).then(result => {
             setAllLyrics(result.lyrics)
             setLyrics(() => result.lyrics.length ? result.lyrics[0] : null)
+            setMetadata({
+                title: result.title,
+                album: result.album,
+                artist: result.artist,
+            })
         })
     }, [musicFile])
 
@@ -62,6 +68,7 @@ export function useLyricsPlayer(currentTime: number, musicFile: File, scrollDown
         currentLyricsRef,
         switchLyrics,
         numberOfLanguages,
-        allLyrics
+        allLyrics,
+        metadata
     }
 }

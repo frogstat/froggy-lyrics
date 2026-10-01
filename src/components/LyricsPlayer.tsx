@@ -3,6 +3,7 @@ import {useAudioPlayer} from "../hooks/useAudioPlayer.ts";
 import ScrollDownLyrics from "./ScrollDownLyrics.tsx";
 import {useState} from "react";
 import BilingualLyrics from "./BilingualLyrics.tsx";
+import AudioPlayer from "./audio/AudioPlayer.tsx";
 
 type LyricsPlayerProps = {
     file: File
@@ -14,7 +15,8 @@ function LyricsPlayer({file}: LyricsPlayerProps) {
 
     const {
         currentTime,
-        changeCurrentTime
+        changeCurrentTime,
+        duration
     } = useAudioPlayer(file);
 
     const {
@@ -23,7 +25,8 @@ function LyricsPlayer({file}: LyricsPlayerProps) {
         currentLyricsRef,
         switchLyrics,
         numberOfLanguages,
-        allLyrics
+        allLyrics,
+        metadata
     } = useLyricsPlayer(currentTime, file, scrollDownMode)
 
     function resolveDisplayMode() {
@@ -50,8 +53,16 @@ function LyricsPlayer({file}: LyricsPlayerProps) {
             {numberOfLanguages > 1 && <button onClick={switchLyrics}>Switch Language</button>}
             <button onClick={() =>
                 setScrollDownMode(prev => !prev)
-            }>Switch Mode</button>
+            }>Switch Mode
+            </button>
             {resolveDisplayMode()}
+            <AudioPlayer
+                metadata={metadata}
+                duration={duration}
+                currentTime={currentTime}
+                changeCurrentTime={changeCurrentTime}
+            >
+            </AudioPlayer>
         </div>
     )
 
